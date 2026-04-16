@@ -7,7 +7,7 @@ import pandas as pd
 # 1. Initialize the API
 app = FastAPI()
 
-# Allow React to communicate with this API
+# Allow React to communicate with this API from anywhere (Vercel)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"], 
@@ -17,12 +17,10 @@ app.add_middleware(
 )
 
 # 2. Load the Production ML Pipeline
-# This contains BOTH the One-Hot Encoder (for the text zones) and the Random Forest
 print("Loading AI Engine...")
 pipeline = joblib.load('aerodynamics_pipeline.pkl')
 
 # 3. Define the new Data Structure
-# We added 'zone' so the API knows which part of the plane to evaluate
 class FlightData(BaseModel):
     zone: str
     stress: float
@@ -35,7 +33,7 @@ def home():
 
 @app.post("/predict")
 def predict_risk(data: FlightData):
-    # Convert the incoming JSON into a Pandas DataFrame that matches our training data exactly
+    # Convert the incoming JSON into a Pandas DataFrame
     input_df = pd.DataFrame({
         'Airframe_Zone': [data.zone],
         'Stress_MPa': [data.stress],
@@ -44,7 +42,6 @@ def predict_risk(data: FlightData):
     })
     
     # Pass the DataFrame through the pipeline
-    # The pipeline automatically converts the text zone to binary and runs the Random Forest
     prediction = pipeline.predict(input_df)[0]
     
     # Ensure the score stays within 0-100 bounds
