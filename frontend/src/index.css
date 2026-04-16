@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@layer utilities {
+  /* This creates that premium Qatar/Emirates style fade */
+  .bg-aircraft-hero {
+    background-image: url('https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=2000&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+  }
+}
+
+body {
+  @apply bg-slate-50 text-slate-900 antialiased selection:bg-sky-200 selection:text-sky-900;
+  overflow-x: hidden;
+}
